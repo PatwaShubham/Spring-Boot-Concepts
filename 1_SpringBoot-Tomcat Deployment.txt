@@ -1,0 +1,193 @@
+In software engineering, a WAR file (Web Application Resource or Web application ARchive) is a 
+file used to distribute a collection of JAR-files, JavaServer Pages , Java Servlets, Java classes, XML files, tag libraries, 
+static web pages (HTML and related files) and other resources that together constitute a web application.
+
+A war (web archive) File contains files of a web project. It may have servlet, xml, jsp, image, html, css, js etc. files.
+
+web archive (war) file contains all the contents of a web application. It reduces the time duration for transferring file.
+
+saves time: The war file combines all the files into a single unit. So it takes less time while transferring file from client to server.
+
+
+
+Project Deployment using Tomcat Server:
+It includes three steps:
+1. Setting up the Spring boot application
+2. Creating WAR file
+3. Deploy WAR file to Tomcat Server
+
+Download the SpringBoot project with Spring Web dependency from spring initializer (https://start.spring.io/)
+
+Extract the project and open it in STS 4 
+
+Add the Controller class having method returning string with the help of @getMapping annotation.
+import org.springframework.web.bind.annotation.GetMapping;  
+import org.springframework.web.bind.annotation.RestController;  
+@RestController  
+public class DemoRestController   
+{  
+@GetMapping("/hello")  
+public String hello()   
+{  
+return "Hello User, have a nice day.";  
+}  
+}  
+
+Run the tomcatdeploymentApplication.java as Java application
+
+Invoke the URl in browser: http://localhost:8080/hello
+
+Create a Spring Boot WAR
+
+It makes use of Spring Framework's Servlet 3.0 support and allows us to configure application 
+when the servlet container launches it. There are three steps to create a WAR for deployment:
+
+1. Extends the SpringBootServletInitializer class in the main class.
+2. Marked the embedded servlet container as provided.
+3. Update packaging JAR to WAR in pom.xml
+
+Let's implement the above three steps in an application.
+
+Step 11: Open the TomcatDeploymentApplication.java file and initialize the Servlet Context required by the Tomcat. 
+To achieve the same extends the SpringBootServletInitializer interface.
+
+public class TomcatDeploymentApplication extends SpringBootServletInitializer  
+{  
+}  
+
+Step 12: Override the configure method
+@Override  
+protected SpringApplicationBuilder configure(SpringApplicationBuilder application)   
+{  
+return application.sources(TomcatDeploymentApplication.class);  
+}   
+
+Below is the complete implementation for TomcatDeploymentApplication.java file:
+
+package com.atos.shubhamlearning.tomcatdeployment;
+
+import org.springframework.boot.SpringApplication;  
+import org.springframework.boot.autoconfigure.SpringBootApplication;  
+import org.springframework.boot.builder.SpringApplicationBuilder;  
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;  
+@SpringBootApplication  
+public class SpringBootWarDeploymentExampleApplication extends SpringBootServletInitializer  
+{  
+@Override  
+protected SpringApplicationBuilder configure(SpringApplicationBuilder application)   
+{  
+return application.sources(SpringBootWarDeploymentExampleApplication.class);  
+}  
+public static void main(String[] args)   
+{  
+SpringApplication.run(SpringBootWarDeploymentExampleApplication.class, args);  
+}  
+}  
+
+Step 13: Open the pom.xml file and marked the servlet container (Tomcat) as provided.
+<dependency>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-starter-tomcat</artifactId>  
+<scope>provided</scope>  
+</dependency>   
+
+Step 14: We need to deploy WAR file so change the package type to WAR in pom.xml file.
+
+<packaging>war</packaging>  
+
+Step 15: Modify the final WAR file name by using the <finalName> tag to avoid including the version numbers. We have created a WAR file with the name web-services.
+
+<finalName>web-services</finalName>  
+
+pom.xml
+
+<?xml version="1.0" encoding="UTF-8"?>  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+<modelVersion>4.0.0</modelVersion>  
+<groupId>com.javatpoint</groupId>  
+<artifactId>spring-boot-war-deployment-example</artifactId>  
+<version>0.0.1-SNAPSHOT</version>  
+<packaging>war</packaging>  
+<name>spring-boot-war-deployment-example</name>  
+<description>Demo project for Spring Boot</description>  
+<parent>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-starter-parent</artifactId>  
+<version>2.2.2.RELEASE</version>  
+<relativePath/> <!-- lookup parent from repository -->  
+</parent>  
+<properties>  
+<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  
+<java.version>1.8</java.version>  
+</properties>  
+<dependencies>  
+<dependency>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-starter-web</artifactId>  
+</dependency>  
+<dependency>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-starter-tomcat</artifactId>  
+<scope>provided</scope>  
+</dependency>    
+<dependency>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-starter-test</artifactId>  
+<scope>test</scope>  
+</dependency>  
+</dependencies>  
+<build>  
+<finalName>web-services</finalName>  
+ <plugins>  
+<plugin>  
+<groupId>org.springframework.boot</groupId>  
+<artifactId>spring-boot-maven-plugin</artifactId>  
+</plugin>  
+</plugins>       
+</build>  
+</project>  
+
+Step 16: Create a WAR file by using the following steps:
+
+Right-click on the project -> Run As -> 5 Maven Build
+
+An Edit Configuration dialog box appears on the screen.
+
+Step 17: Write clean install in the Goals label and check the Skip Tests. 
+Click on the Apply and Run button, respectively.
+
+When the WAR file successfully created, 
+it shows the WAR file path and a message BUILD SUCCESS in the console, as shown in the following figure.
+
+Step 18: Copy the path and access the target folder of the application. 
+We found the WAR file inside the target folder with the same name as we have specified in the pom.xml file.
+ In our case, path is:
+
+Project workspace\ProjectFolder\Target
+
+Deploy the WAR file to Tomcat
+To deploy the WAR file, follow the steps below:
+
+Step 19: Download and install the Apache Tomcat Server, if not installed.
+
+Step 20: Copy the WAR file (web-services.war) and paste it inside the webapps folder of the Tomcat. In our case, the location of the webapps folder is:
+
+C:\Program Files\Apache Software Foundation\Tomcat 8.5\webapps  
+
+Spring Boot Project Deployment Using Tomcat
+Step 21: Now open the Command Prompt and type the following commands:
+
+C:\Cd Program Files\Apache Software Foundation\Tomcat  8.5\bin  
+C:\Cd Program Files\Apache Software Foundation\Tomcat  8.5\bin>startup  
+
+Spring Boot Project Deployment Using Tomcat
+The startup command starts the Tomcat server and deploys the WAR file, as shown below.
+
+Spring Boot Project Deployment Using Tomcat
+The following image shows that WAR is deployed successfully.
+
+Spring Boot Project Deployment Using Tomcat
+Step 23: Open the browser and invoke the URL http://localhost:8080/web-services/hello. It returns the message Hello User, have a nice day.
+
