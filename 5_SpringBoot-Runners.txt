@@ -1,0 +1,61 @@
+Application Runner or command line runner interface helps us to execute the code 
+after the spring boot application started.
+
+eg. In one of our projects, we used these to source data 
+from other microservices via service discovery, which was registered.
+
+We can use these interfaces to perform some actions immediately after the application started
+
+===========================================================
+ 
+Application Runner
+
+Application runner is an interface used to execute the code immediately after the spring boot application started
+
+
+com.atos.shubhamlearning.applicationrunnerdemo;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication implements ApplicationRunner {
+   public static void main(String[] args) {
+      SpringApplication.run(DemoApplication.class, args);
+   }
+   @Override
+   public void run(ApplicationArguments arg0) throws Exception {
+      System.out.println("Hello World from Application Runner");
+   }
+}
+
+Pls note in above code snippet, the println statement got executed immediately after the Tomcat has started 
+please check logs
+
+=============================================================
+Command Line Runner
+Command Line Runner is an interface. It is used to execute the code after the Spring Boot application started. The example given below shows how to implement the Command Line Runner interface on the main class file.
+
+package com.tutorialspoint.demo;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication implements CommandLineRunner {
+   public static void main(String[] args) {
+      SpringApplication.run(DemoApplication.class, args);
+   }
+   @Override
+   public void run(String... arg0) throws Exception {
+      System.out.println("Hello world from Command Line Runner");
+   }
+}
+
+Both of them provides the same functionality and the only difference between CommandLineRunner 
+and ApplicationRunner is CommandLineRunner.run() accepts String array[] whereas ApplicationRunner.run() 
+accepts ApplicationArguments as argument.
+
+For eg please refer to https://javainterviewpoint.com/spring-boot-commandlinerunner-applicationrunner/
