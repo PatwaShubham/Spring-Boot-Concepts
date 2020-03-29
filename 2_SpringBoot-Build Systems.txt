@@ -1,0 +1,25 @@
+In Spring boot choosing choosing build system is an important task.
+
+Maven and gradle are recommended as they provide good support for dependency management.
+
+Spring Boot team provides a list of dependencies to support the Spring Boot version for its every release. 
+You do not need to provide a version for dependencies in the build configuration file. 
+Spring Boot automatically configures the dependencies version based on the release. 
+Remember that when you upgrade the Spring Boot version, dependencies also will upgrade automatically.
+
+Maven Dependency
+For Maven configuration, we should inherit the Spring Boot Starter parent project to manage the Spring Boot Starters dependencies. For this, simply we can inherit the starter parent in our pom.xml file as shown below.
+
+<parent>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-parent</artifactId>
+   <version>1.5.8.RELEASE</version>
+</parent>
+We should specify the version number for Spring Boot Parent Starter dependency. Then for other starter dependencies, we do not need to specify the Spring Boot version number. Observe the code given below -
+
+<dependencies>
+   <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+   </dependency>
+</dependencies>
