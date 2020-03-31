@@ -1,0 +1,72 @@
+Flyway is a version control application to evolve your database schema easily and reliably accross all our instances.
+
+Why database migration : https://flywaydb.org/getstarted/why
+
+How flyway works: 		https://flywaydb.org/getstarted/how
+
+Configuring Flyway Database
+First, download the Spring Boot project from Spring Initializer page www.start.spring.io and choose the following dependencies −
+
+Spring Boot Starter Web
+Flyway
+MySQL
+JDBC
+
+Import the above downloaded project into STS 4
+
+In application.properties file we need to configure the database properties for creating the datasource and also flyway properties
+
+
+For properties file users, add the below properties in the application.properties file.
+
+===============================application.properties=================================
+spring.application.name = flywayapp  
+
+spring.datasource.driverClassName = com.mysql.jdbc.Driver
+spring.datasource.url = jdbc:mysql://localhost:3306/USERSERVICE?autoreconnect=true
+spring.datasource.username = root
+spring.datasource.password = root
+spring.datasource.testOnBorrow = true
+spring.datasource.testWhileIdle = true
+spring.datasource.timeBetweenEvictionRunsMillis = 60000
+spring.datasource.minEvictableIdleTimeMillis = 30000
+spring.datasource.validationQuery = SELECT 1
+spring.datasource.max-active = 15
+spring.datasource.max-idle = 10
+spring.datasource.max-wait = 8000
+
+flyway.url = jdbc:mysql://localhost:3306/mysql
+flyway.schemas = USERSERVICE
+flyway.user = root
+flyway.password = root
+
+
+
+Now, create a SQL file under the src/main/resources/db/migration directory. Name the SQL file as “V1__Initial.sql”
+
+CREATE TABLE USERS (ID INT AUTO_INCREMENT PRIMARY KEY, USERID VARCHAR(45));
+INSERT INTO USERS (ID, USERID) VALUES (1, 'tutorialspoint.com');
+The main Spring Boot application class file code is given below −
+
+package com.tutorialspoint.flywayapp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class FlywayappApplication {
+   public static void main(String[] args) {
+      SpringApplication.run(FlywayappApplication.class, args);
+   }
+}
+
+Create a JAR file by executing below command:
+
+mvn clean install
+
+
+After successful build, run the JAR file
+
+java -jar <JARFILE>
+
+We can see the output by hitting query on database.

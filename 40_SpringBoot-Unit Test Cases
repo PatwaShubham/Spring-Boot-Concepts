@@ -1,0 +1,114 @@
+Junit is the most popular Java unit testing framework.
+
+We working on large projects some of these projects may have 2000 source files or may have 1 million lines of code.
+
+Before unit testing, we need to deploy the entire application and checking if the screen looks great.
+
+Unit testing focuses on writing automated tests for individual classes and methods.
+
+JUnit is a framework which helps you call a method and check (or assert) whether the output is as expected.
+
+The important thing about automation testing is that these test can be run with continuous integration 
+as soon as some code changes. 
+
+package com.atos.shubhamlearning.junitdemo;
+
+public class MyMath {
+	int sum(int[] numbers) {
+		int sum = 0;
+		for (int i : numbers) {
+			sum += i;
+		}
+		return sum;
+	}
+}
+
+
+Unit test for the sum method
+
+package com.atos.shubhamlearning.junitdemo;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class MyMathTest {
+	MyMath myMath = new MyMath();
+
+	// MyMath.sum
+	// 1,2,3 => 6
+	@Test
+	public void sum_with3numbers() {
+		System.out.println("Test1");
+		assertEquals(6, myMath.sum(new int[] { 1, 2, 3 }));
+	}
+
+	@Test
+	public void sum_with1number() {
+		System.out.println("Test2");
+		assertEquals(3, myMath.sum(new int[] { 3 }));
+	}
+}
+
+
+Other Important JUnit annotations
+
+@Before @After annotations - Run before and after every test method in the class
+@BeforeClass @AfterClass annotations - Static methods which are executed once before and after a test class
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class MyMathTest {
+	MyMath myMath = new MyMath();
+
+	@Before
+	public void before() {
+		System.out.println("Before");
+	}
+
+	@After
+	public void after() {
+		System.out.println("After");
+	}
+
+	@BeforeClass
+	public static void beforeClass() {
+		System.out.println("Before Class");
+	}
+
+	@AfterClass
+	public static void afterClass() {
+		System.out.println("After Class");
+	}
+
+	// MyMath.sum
+	// 1,2,3 => 6
+	@Test
+	public void sum_with3numbers() {
+		System.out.println("Test1");
+		assertEquals(6, myMath.sum(new int[] { 1, 2, 3 }));
+	}
+
+	@Test
+	public void sum_with1number() {
+		System.out.println("Test2");
+		assertEquals(3, myMath.sum(new int[] { 3 }));
+	}
+}
+
+====================================================================================
+Introduction to Mockito
+
+Mockito is the most popular mocking framework in Java.
+
+When we write a unit test for SomeBusinessApplication, we will want to use a mock DataService - one which does not connect to a database.
