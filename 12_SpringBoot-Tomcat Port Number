@@ -1,0 +1,7 @@
+Spring Boot let us run the application more than once on different port number.
+
+In application.properties file we can set up the custom port for property server.port:
+
+server.port=9090
+
+Note: If server.port sets to 0 then Tomcat uses any random port number

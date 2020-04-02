@@ -1,0 +1,140 @@
+CORS(Cross Origin Resource Sharing) allows a webpage to request additional resources into the browser from other domains
+eg. fonts, CSS or static images from CDN.
+
+CORS helps in serving web content from multiple domains into browsers who usually have the same-origin security policy.
+
+It prevents the JavaScript code producing or consuming the requests against different origin.
+
+For example, your web application is running on 8080 port and by using JavaScript you are trying to consuming RESTful 
+web services from 9090 port. 
+Under such situations, you will face the Cross-Origin Resource Sharing security issue on your web browsers.
+
+Based on above example below are two requirements needed to handle this issue −
+
+RESTful web services should support the Cross-Origin Resource Sharing.
+
+RESTful web service application should allow accessing the API(s) from the 8080 port.
+
+https://howtodoinjava.com/spring5/webmvc/spring-mvc-cors-configuration/
+
+=========================================================================================================
+1. Spring CORS – Method level with @CrossOrigin
+Spring MVC provides @CrossOrigin annotation. This annotation marks the annotated method or type as permitting cross origin 
+requests.
+
+We can override default CORS settings by giving value to annotation attributes:
+===========================================================================================================================
+ATTRIBUTE					|	DESCRIPTION
+============================================================================================================================
+origins	 					|	List of allowed origins. It’s value is placed in the Access-Control-Allow-Origin 
+							|	header of both the pre-flight response and the actual response.
+							|	"*" – means that all origins are allowed.
+							|	If undefined, all origins are allowed.
+=============================================================================================================================							
+allowedHeaders				|	List of request headers that can be used during the actual request. Value is used in 
+							|	preflight’s response header Access-Control-Allow-Headers.
+							|	"*" – means that all headers requested by the client are allowed.
+							|	If undefined, all requested headers are allowed.
+							
+=============================================================================================================================							
+methods						|   List of supported HTTP request methods. If undefined, methods defined by 
+							|	RequestMapping annotation are used.
+=============================================================================================================================							
+exposedHeaders				|   List of response headers that the browser will allow the client to access. 
+							|	Value is set in actual response header Access-Control-Expose-Headers.
+							|	If undefined, an empty exposed header list is used.
+============================================================================================================================							
+allowCredentials			|	It determine whether browser should include any cookies associated with the request.
+							|	false – cookies should not included.
+							|	" " (empty string) – means undefined.
+							|	true – pre-flight response will include the header Access-Control-Allow-Credentials 
+							|	with value set to true.
+							|	If undefined, credentials are allowed.
+============================================================================================================================							
+maxAge						|	Maximum age (in seconds) of the cache duration for pre-flight responses. Value is set 
+							|	in header Access-Control-Max-Age.
+							|	If undefined, max age is set to 1800 seconds (30 minutes).
+==============================================================================================================================							
+
+1.2. @CrossOrigin at Class/Controller Level
+HomeController.java
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@Controller
+public class HomeController 
+{
+    @GetMapping(path="/")
+    public String homeInit(Model model) {
+        return "home";
+    }
+}
+
+1.3. @CrossOrigin at Method Level
+HomeController.java
+@Controller
+public class HomeController 
+{
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path="/")
+    public String homeInit(Model model) {
+        return "home";
+    }
+}
+
+1.4. @CrossOrigin Overridden at Method Level
+homeInit() method will be accessible only from domain http://example.com. 
+Rest other methods in HomeController will be accessible from all domains.
+
+HomeController.java
+@Controller
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class HomeController 
+{
+    @CrossOrigin(origins = "http://example.com")
+    @GetMapping(path="/")
+    public String homeInit(Model model) {
+        return "home";
+    }
+}
+
+Global CORS Configuration
+We need to define the shown @Bean configuration to set the CORS configuration support globally to your Spring Boot application.
+
+@Bean
+public WebMvcConfigurer corsConfigurer() {
+   return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+         registry.addMapping("/products").allowedOrigins("http://localhost:9000");
+      }    
+   };
+}
+To code to set the CORS configuration globally in main Spring Boot application is given below.
+
+package com.atos.shubhamlearning.corsdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@SpringBootApplication
+public class DemoApplication {
+   public static void main(String[] args) {
+      SpringApplication.run(DemoApplication.class, args);
+   }
+   @Bean
+   public WebMvcConfigurer corsConfigurer() {
+      return new WebMvcConfigurerAdapter() {
+         @Override
+         public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/products").allowedOrigins("http://localhost:8080");
+         }
+      };
+   }
+}
+
+
+Now, you can create a Spring Boot web application 
+that runs on 8080 port and your RESTful web service application that can run on the 9090 port.

@@ -1,0 +1,134 @@
+Internationalization is the process that makes our application adaptable to different languages and regions
+without doing any changes in the source code.
+
+Internationalization is the readiness to the localization.
+
+===========================================================================================================
+Dependencies 
+
+We need below two dependencies to develop an application for internationalization:
+
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+===========================================================================================================
+LocaleResolver
+We need to determine default Locale of your application. We need to add the LocaleResolver bean in our Spring Boot 
+application.
+
+@Bean
+public LocaleResolver localeResolver() {
+   SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+   sessionLocaleResolver.setDefaultLocale(Locale.US);
+   return sessionLocaleResolver;
+}
+
+===========================================================================================================
+LocaleChangeInterceptor
+LocaleChangeInterceptor is a used to change the new Locale based on the value of the language parameter added to a request.
+
+@Bean
+public LocaleChangeInterceptor localeChangeInterceptor() {
+   LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+   localeChangeInterceptor.setParamName("language");
+   return localeChangeInterceptor;
+}
+===========================================================================================================
+To take this effect, we need to add the LocaleChangeInterceptor into the application’s registry interceptor. 
+The configuration class should extend the WebMvcConfigurerAdapter class and override the addInterceptors() method.
+
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+   registry.addInterceptor(localeChangeInterceptor());
+}
+===========================================================================================================
+
+Messages Sources
+Spring Boot application by default takes the message sources from src/main/resources folder under the classpath. 
+The default locale message file name should be message.properties and files for each locale should name as 
+messages_XX.properties. The “XX” represents the locale code.
+
+All the message properties should be used as key pair values. If any properties are not found on the locale, 
+the application uses the default property from messages.properties file.
+
+The default messages.properties will be as shown −
+
+welcome.text=Hi Welcome to Everyone
+The French language messages_fr.properties will be as shown −
+
+welcome.text=Salut Bienvenue à tous
+Note − Messages source file should be saved as “UTF-8” file format.
+
+===========================================================================================================
+
+HTML file
+In the HTML file, use the syntax #{key} to display the messages from the properties file.
+
+<h1 th:text = "#{welcome.text}"></h1>
+
+===========================================================================================================
+
+com.atos.shubhamlearning.internationalizationdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+   public static void main(String[] args) {
+      SpringApplication.run(DemoApplication.class, args);
+   }
+}
+
+
+===========================================================================================================
+
+com.atos.shubhamlearning.internationalizationdemo;
+import java.util.Locale;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+@Configuration
+public class Internationalization extends WebMvcConfigurerAdapter {
+   @Bean
+   public LocaleResolver localeResolver() {
+      SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+      sessionLocaleResolver.setDefaultLocale(Locale.US);
+      return sessionLocaleResolver;
+   }
+   @Bean
+   public LocaleChangeInterceptor localeChangeInterceptor() {
+      LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+      localeChangeInterceptor.setParamName("language");
+      return localeChangeInterceptor;
+   }
+   @Override
+   public void addInterceptors(InterceptorRegistry registry) {
+      registry.addInterceptor(localeChangeInterceptor());
+   }
+}
+
+===========================================================================================================
+
+8. Character Encoding
+In case you are working on a language which requires handling of character encoding, you may need to add following properties in your application.properties file:
+
+# Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly.
+spring.http.encoding.charset=UTF-8
+# Enable http encoding support.
+spring.http.encoding.enabled=true
+# Force the encoding to the configured charset on HTTP requests and responses.
+spring.http.encoding.force=true
